@@ -1,4 +1,5 @@
 export default class Controller {
+  onReady: Promise<boolean>;
   readonly #baseUrl: string = 'http://enter.local/';
   #token: string = '';
   #messagesCount: number = 0;
@@ -11,16 +12,14 @@ export default class Controller {
 
   constructor(socketUrl: string = 'ws://test.enter-systems.ru/') {
     this.socketUrl = socketUrl;
-    return this.connect();
+    this.onReady = this.connect();
   }
-  onMessage(callback: Function) {
-    this.#messageCallbacks.push(callback);
-  }
-  async connect() {
+
+  async connect(): Promise<boolean> {
     return new Promise((resolve) => {
       this.#instance = new WebSocket(this.socketUrl);
       this.#instance.onopen = () => {
-        console.log('on open');
+        console.log('WebSocket opened');
         this.#instance.onmessage = (event: MessageEvent) => {
           const data = JSON.parse(event.data);
           switch (data[0]) {
@@ -48,16 +47,21 @@ export default class Controller {
         };
         this.send([20, this.#heartbeatCounter++]);
 
-        resolve(this);
+        resolve(true);
       };
 
       this.#instance.onclose = () => {
-        console.log('closed, reconnecting...');
+        console.log('WebSocket closed, reconnecting...');
         clearTimeout(this.#heartbeatInterval);
         this.connect();
       };
     });
   }
+
+  onMessage(callback: Function) {
+    this.#messageCallbacks.push(callback);
+  }
+
   notify(payload: Object) {
     this.#messageCallbacks.forEach((callback) => {
       callback(payload);
@@ -78,15 +82,12 @@ export default class Controller {
     this.#instance.send(JSON.stringify(message));
   }
   login(creds = ['enter', 'A505a']): void {
-    console.log('login');
     this.send([2, this.getRandomString(), this.#buildUrl('login'), ...creds]);
   }
   logout(): void {
-    console.log('logout');
     this.send([2, this.getRandomString(), this.#buildUrl('logout')]);
   }
   loginByToken(): void {
-    console.log('loginByToken');
     this.send([2, this.getRandomString(), this.#buildUrl('loginByToken'), this.#token]);
   }
   subscribe(event: string = 'subscription/logs/list'): void {
