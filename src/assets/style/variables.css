@@ -1,0 +1,12 @@
+:root {
+  --black: #171c1b;
+  --white: #fff;
+  --orange: #c3853c;
+  --violet: #391a6b;
+  --salad: #42acb3;
+  --red: rgb(231, 47, 34);
+  --gray: #4a4a4a;
+  --gray-05: rgba(23, 28, 27, 0.05);
+  --gray-015: rgba(23, 28, 27, 0.15);
+  --gray-5: rgba(23, 28, 27, 0.5);
+}

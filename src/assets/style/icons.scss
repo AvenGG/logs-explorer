@@ -1,0 +1,23 @@
+.i {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: 50% 50%;
+  background-size: contain;
+  flex-shrink: 0;
+  background: currentColor no-repeat 50% 50% / contain;
+  &_ml-10 {
+    margin-left: 10px;
+  }
+  &-chevron-down {
+    mask-image: url('assets/svg/icons/chevron-down.svg');
+  }
+  &-search {
+    mask-image: url('assets/svg/icons/search.svg');
+  }
+  &-check {
+    mask-image: url('assets/svg/icons/check.svg');
+  }
+}

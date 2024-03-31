@@ -1,0 +1,57 @@
+@import 'scrollbar.scss';
+@import 'button.scss';
+@import 'icons.scss';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  font-family: Manrope;
+  font-style: normal;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+ol,
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+button {
+  &:disabled {
+    cursor: not-allowed;
+  }
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      cursor: pointer;
+    }
+  }
+}
+pre {
+  white-space: pre-wrap;
+  margin: initial;
+}
+textarea {
+  cursor: auto;
+}
+
+.ml-5 {
+  margin-left: 5px;
+}
