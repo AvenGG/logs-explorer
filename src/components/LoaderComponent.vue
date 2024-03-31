@@ -56,24 +56,24 @@
     </svg>
   </div>
 </template>
-<script setup></script>
+
 <style lang="scss">
-  .loader {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    --size: 100px;
-    --color: var(--black);
-    &__svg {
-      margin: 0 auto;
-      display: block;
-      width: var(--size);
-      height: var(--size);
-      g {
-        circle {
-          fill: var(--color);
-        }
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  --size: 100px;
+  --color: var(--black);
+  &__svg {
+    margin: 0 auto;
+    display: block;
+    width: var(--size);
+    height: var(--size);
+    g {
+      circle {
+        fill: var(--color);
       }
     }
   }
+}
 </style>

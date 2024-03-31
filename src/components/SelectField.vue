@@ -33,13 +33,13 @@
 </template>
 
 <script setup>
-import { vOnClickOutside } from '@vueuse/components'
+import { vOnClickOutside } from '@vueuse/components';
 
-import SearchField from '@/components/SearchField.vue'
+import SearchField from '@/components/SearchField.vue';
 
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed } from 'vue';
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue']);
 
 const props = defineProps({
   modelValue: { type: [Object, Number, String], default: () => ({}) },
@@ -54,93 +54,93 @@ const props = defineProps({
   allowEmpty: { type: Boolean, default: true },
   showSearch: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false }
-})
+});
 
-const selectOpenButtonRef = ref(null)
+const selectOpenButtonRef = ref(null);
 
-let searchText = ref('')
-let isDropdownOpen = ref(false)
+let searchText = ref('');
+let isDropdownOpen = ref(false);
 
-const selectedItems = ref([])
+const selectedItems = ref([]);
 
 const onOpenButtonClicked = () => {
-  isDropdownOpen.value = !isDropdownOpen.value
-}
+  isDropdownOpen.value = !isDropdownOpen.value;
+};
 const findSelectedItemIndexById = (id) => {
-  return selectedItems.value.findIndex((item) => item[props.idName] === id)
-}
+  return selectedItems.value.findIndex((item) => item[props.idName] === id);
+};
 const selectItem = (item) => {
-  const index = findSelectedItemIndexById(item[props.idName])
+  const index = findSelectedItemIndexById(item[props.idName]);
   if (index === -1) {
     if (props.multiple) {
-      selectedItems.value.push(item)
+      selectedItems.value.push(item);
     } else {
-      selectedItems.value = [item]
-      isDropdownOpen.value = false
+      selectedItems.value = [item];
+      isDropdownOpen.value = false;
     }
   } else {
-    if (props.allowEmpty || selectedItems.value.length > 1) selectedItems.value.splice(index, 1)
+    if (props.allowEmpty || selectedItems.value.length > 1) selectedItems.value.splice(index, 1);
   }
-}
+};
 const selectAll = () => {
-  selectedItems.value = transformedItems.value
-}
+  selectedItems.value = transformedItems.value;
+};
 const removeAll = () => {
-  selectedItems.value = []
-}
+  selectedItems.value = [];
+};
 
 const normalizeValue = (val) => {
-  return props.valueAsString ? { [props.idName]: val, [props.valueName]: val } : val
-}
+  return props.valueAsString ? { [props.idName]: val, [props.valueName]: val } : val;
+};
 
 const transformedItems = computed(() =>
   props.items.map((item) => (props.valueAsString ? { [props.idName]: item, [props.valueName]: item } : item))
-)
+);
 
 const itemsToShow = computed(() =>
   transformedItems.value.filter((item) => String(item[props.valueName]).includes(searchText.value))
-)
+);
 
-const selectedItemsIds = computed(() => selectedItems.value.map((item) => item[props.idName]))
+const selectedItemsIds = computed(() => selectedItems.value.map((item) => item[props.idName]));
 const selectedItemsText = computed(() => {
-  const length = selectedItems.value.length
-  return length ? `${selectedItems.value[0][props.valueName]}${length > 1 ? ' + ' + (length - 1) : ''}` : ''
-})
+  const length = selectedItems.value.length;
+  return length ? `${selectedItems.value[0][props.valueName]}${length > 1 ? ' + ' + (length - 1) : ''}` : '';
+});
 
 const onSelectClickOutside = [
   () => {
-    isDropdownOpen.value = false
+    isDropdownOpen.value = false;
   },
   { ignore: [selectOpenButtonRef] }
-]
+];
 
 watch(
   () => props.modelValue,
   (val, vala) => {
-    if (JSON.stringify(vala) === JSON.stringify(val)) return
-    let items = []
-    if (Array.isArray(val)) items = val
-    else if (val) items = [val]
-    selectedItems.value = items.map(normalizeValue)
+    if (JSON.stringify(vala) === JSON.stringify(val)) return;
+    let items = [];
+    if (Array.isArray(val)) items = val;
+    else if (val) items = [val];
+    selectedItems.value = items.map(normalizeValue);
   },
   { immediate: true }
-)
+);
 watch(isDropdownOpen, () => {
-  searchText.value = ''
-})
+  searchText.value = '';
+});
 
 const emitValuePrepareFunc = (() => {
-  return props.valueAsString ? (value) => value[props.valueName] : (value) => value
-})()
+  return props.valueAsString ? (value) => value[props.valueName] : (value) => value;
+})();
 
 watch(
   selectedItems,
   (val) => {
-    const items = val.map(emitValuePrepareFunc)
-    emit('update:modelValue', props.multiple ? items : items[0] || null)
+    const items = val.map(emitValuePrepareFunc);
+    emit('update:modelValue', props.multiple ? items : items[0] || null);
   },
   { deep: true }
-)
+);
 </script>
 
 <style lang="scss">

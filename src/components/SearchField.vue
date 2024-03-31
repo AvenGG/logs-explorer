@@ -13,38 +13,38 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed } from 'vue';
 
 const props = defineProps({
   modelValue: { type: String, default: '' },
   debounce: { type: Number, default: 0 },
-  disabled: { type: Number, default: 0 }
-})
-const emit = defineEmits(['update:modelValue', 'search'])
+  disabled: { type: Boolean, default: false }
+});
+const emit = defineEmits(['update:modelValue', 'search']);
 
-const searchText = ref('')
-let timeout = null
+const searchText = ref('');
+let timeout = null;
 
 const emitFunction = computed(() => {
   return props.debounce
     ? (val) => {
-        clearTimeout(timeout)
+        clearTimeout(timeout);
         timeout = setTimeout(() => {
-          emit('update:modelValue', val)
-        }, props.debounce)
+          emit('update:modelValue', val);
+        }, props.debounce);
       }
     : (val) => {
-        emit('update:modelValue', val)
-      }
-})
+        emit('update:modelValue', val);
+      };
+});
 
 watch(
   () => props.modelValue,
   (val) => {
-    searchText.value = val
+    searchText.value = val;
   }
-)
-watch(searchText, (val) => emitFunction.value(val))
+);
+watch(searchText, (val) => emitFunction.value(val));
 </script>
 
 <style lang="scss">

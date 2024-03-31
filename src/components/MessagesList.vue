@@ -13,28 +13,31 @@
     />
   </div>
 </template>
-<script setup>
-import LoaderComponent from '@/components/LoaderComponent.vue'
-import messageComponent from '@/components/MessageComponent.vue'
-import VirtualList from 'vue3-virtual-scroll-list'
 
-import { ref, watch } from 'vue'
+<script setup>
+import LoaderComponent from '@/components/LoaderComponent.vue';
+import messageComponent from '@/components/MessageComponent.vue';
+import VirtualList from 'vue3-virtual-scroll-list';
+
+import { ref, watch } from 'vue';
 
 const props = defineProps({
   messages: { type: Array, default: () => [] },
   isLoaded: { type: Boolean, default: false },
   scrollElementId: { type: Number, default: null }
-})
-const virtualListRef = ref(null)
+});
+
+const virtualListRef = ref(null);
 
 watch(
   () => props.scrollElementId,
   (val) => {
-    if (val === null) return
-    virtualListRef.value.scrollToIndex(val)
+    if (val === null) return;
+    virtualListRef.value.scrollToIndex(val);
   }
-)
+);
 </script>
+
 <style lang="scss">
 .messages {
   border: 1px solid var(--violet);

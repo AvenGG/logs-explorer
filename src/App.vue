@@ -3,6 +3,7 @@
     <MainView />
   </main>
 </template>
+
 <script setup>
-import MainView from '@/components/MainView.vue'
+import MainView from '@/components/MainView.vue';
 </script>

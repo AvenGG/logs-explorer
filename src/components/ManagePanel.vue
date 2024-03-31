@@ -40,23 +40,25 @@
     </div>
   </div>
 </template>
+
 <script setup>
-import { ref } from 'vue'
+import { ref } from 'vue';
 
-import SearchField from '@/components/SearchField.vue'
-import SelectField from '@/components/SelectField.vue'
+import SearchField from '@/components/SearchField.vue';
+import SelectField from '@/components/SelectField.vue';
 
-const props = defineProps({
+defineProps({
   count: { type: Number, default: 0 },
   current: { type: Number, default: 0 },
   isLoaded: { type: Boolean, default: false }
-})
+});
 
-const searchText = ref('')
+const searchText = ref('');
 
-const levels = ['DEBUG', 'TRACE', 'WARN']
-const selectedLevel = ref('')
+const levels = ['DEBUG', 'TRACE', 'WARN'];
+const selectedLevel = ref('');
 </script>
+
 <style lang="scss">
 .panel {
   &__fields {

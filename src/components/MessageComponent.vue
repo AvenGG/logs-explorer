@@ -10,9 +10,11 @@
     </div>
   </div>
 </template>
+
 <script setup>
-const props = defineProps({ source: { type: Object, default: () => ({}) } })
+defineProps({ source: { type: Object, default: () => ({}) } });
 </script>
+
 <style lang="scss">
 .message__item {
   white-space: pre;
