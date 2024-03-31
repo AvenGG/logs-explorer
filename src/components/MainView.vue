@@ -59,6 +59,7 @@ watch(
   () => [scrollElementId.value, scrollId.value],
   ([elementId, scrollId]) => {
     const message = messagesWithSearchText.value[elementId]
+    if (!message) return
     if (previousMessageProps.obj) {
       previousMessageProps.obj.messageReplaced = previousMessageProps.string
     }
@@ -69,7 +70,7 @@ watch(
 
     let occurence = 0
     message.messageReplaced = message.Message.replace(new RegExp(searchText.value, 'g'), (match) => {
-      return `<span style="background-color: var(${occurence++ === occurenceStringPosition ? '--orange' : '--salad'})">${match}</span>`
+      return `<span style="background-color: var(${occurence++ === occurenceStringPosition ? '--orange' : '--salad'});display: inline-block">${match}</span>`
     })
   }
 )
@@ -98,7 +99,7 @@ watch(
           ...item,
           messageReplaced: item.Message.replaceAll(
             searchText,
-            `<span style="background-color: var(--salad)">${searchText}</span>`
+            `<span style="background-color: var(--salad);display: inline-block">${searchText}</span>`
           )
         }
       } else {
