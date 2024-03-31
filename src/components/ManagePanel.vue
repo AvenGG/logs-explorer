@@ -18,7 +18,7 @@
           class="panel__fields-search"
         />
         <p v-if="searchText" class="panel__fields-count-number">Совпадений: {{ count }}</p>
-        <p v-if="searchText" class="panel__fields-count-number">Элемент: {{ current }} из {{ count }}</p>
+        <p v-if="count" class="panel__fields-count-number">Элемент: {{ current+1 }} из {{ count }}</p>
         <div class="panel__fields-count-buttons">
           <button v-if="count" class="button" :disabled="!current" @click="$emit('update:current', current - 1)">
             Назад
@@ -26,7 +26,7 @@
           <button
             v-if="count"
             class="button"
-            :disabled="current === count"
+            :disabled="current === count-1"
             @click="$emit('update:current', current + 1)"
           >
             Вперёд
@@ -42,7 +42,7 @@ import { ref } from 'vue'
 import SearchField from '@/components/SearchField.vue'
 import SelectField from '@/components/SelectField.vue'
 
-const props = defineProps({ count: { type: Number, default: 0 }, current: { type: Number, default: null } })
+const props = defineProps({ count: { type: Number, default: 0 }, current: { type: Number, default: 0 } })
 
 const searchText = ref('')
 

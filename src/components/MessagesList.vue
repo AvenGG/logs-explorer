@@ -4,7 +4,7 @@
     <p class="messages__empty" v-else-if="!messages.length">Сообщений с текущими фильтрами не найдено</p>
     <virtual-list
       ref="virtualListRef"
-      style="max-height: 80vh; overflow-y: auto"
+      style="max-height: 70vh; overflow-y: auto"
       :style="messages.length && 'padding: 10px'"
       :data-key="'id'"
       :data-sources="messages"

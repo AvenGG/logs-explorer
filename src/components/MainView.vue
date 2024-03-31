@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed, watch } from 'vue'
+import { onMounted, ref, computed, watch, nextTick } from 'vue'
 
 import Controller from '@/api/Controller'
 
@@ -25,7 +25,7 @@ import ManagePanel from '@/components/ManagePanel.vue'
 const messages = ref([])
 const searchText = ref('')
 const isLoaded = ref(false)
-const scrollId = ref(null)
+const scrollId = ref(0)
 
 onMounted(async () => {
   const controller = await new Controller()
@@ -49,14 +49,37 @@ const filteredByLevel = computed(() => {
 })
 const messagesToShow = computed(() => (searchText.value ? messagesWithSearchText.value : filteredByLevel.value))
 
-const scrollElementId = computed(() => searchIndexes.value[scrollId.value] || null)
+const scrollElementId = computed(() => searchIndexes.value[scrollId.value]?.id || 0)
+
+let previousMessageProps = {
+  string: '',
+  obj: null
+}
+watch(
+  () => [scrollElementId.value, scrollId.value],
+  ([elementId, scrollId]) => {
+    const message = messagesWithSearchText.value[elementId]
+    if (previousMessageProps.obj) {
+      previousMessageProps.obj.messageReplaced = previousMessageProps.string
+    }
+    previousMessageProps.obj = message
+    previousMessageProps.string = message.messageReplaced
+
+    const occurenceStringPosition = searchIndexes.value[scrollId]?.occurenceStringPosition
+
+    let occurence = 0
+    message.messageReplaced = message.Message.replace(new RegExp(searchText.value, 'g'), (match) => {
+      return `<span style="background-color: var(${occurence++ === occurenceStringPosition ? '--orange' : '--salad'})">${match}</span>`
+    })
+  }
+)
 
 watch(
   () => [searchText.value, filteredByLevel.value],
   ([searchText, filteredByLevel]) => {
     count.value = 0
-    scrollId.value = null
-    if (!searchText) {
+    scrollId.value = 0
+    if (!searchText || !filteredByLevel.length) {
       searchIndexes.value = []
       messagesWithSearchText.value = []
       return
@@ -68,8 +91,8 @@ watch(
       if (occurrencesCount) {
         const currentMessageOccurancesIndexes = Array.from({ length: occurrencesCount }, (v, k) => k + count.value)
         count.value += occurrencesCount
-        currentMessageOccurancesIndexes.forEach((idx) => {
-          searchIndexes.value[idx] = item.id
+        currentMessageOccurancesIndexes.forEach((itemIndex, idx) => {
+          searchIndexes.value[itemIndex] = { id: item.id, occurenceStringPosition: idx }
         })
         messagesWithSearchText.value[index] = {
           ...item,
