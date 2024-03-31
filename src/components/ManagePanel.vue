@@ -7,30 +7,34 @@
         empty-text="любой"
         button-text="Отфильтровать по уровню"
         :items="levels"
+        :disabled="!isLoaded"
         multiple
         @update:modelValue="$emit('selectLevel', $event)"
       />
-      <div class="panel__fields-count-container">
+      <div class="panel__fields-search-container">
         <SearchField
           v-model="searchText"
           :debounce="200"
+          :disabled="!isLoaded"
           @update:modelValue="$emit('searchTextChanged', $event)"
           class="panel__fields-search"
         />
-        <p v-if="searchText" class="panel__fields-count-number">Совпадений: {{ count }}</p>
-        <p v-if="count" class="panel__fields-count-number">Элемент: {{ current+1 }} из {{ count }}</p>
-        <div class="panel__fields-count-buttons">
-          <button v-if="count" class="button" :disabled="!current" @click="$emit('update:current', current - 1)">
-            Назад
-          </button>
-          <button
-            v-if="count"
-            class="button"
-            :disabled="current === count-1"
-            @click="$emit('update:current', current + 1)"
-          >
-            Вперёд
-          </button>
+        <div class="panel__fields-search-info">
+          <p v-if="searchText" class="panel__fields-count-match">Совпадений: {{ count }}</p>
+          <p v-if="count" class="panel__fields-count-of">Элемент: {{ current + 1 }} из {{ count }}</p>
+          <div class="panel__fields-count-buttons">
+            <button v-if="count" class="button" :disabled="!current" @click="$emit('update:current', current - 1)">
+              Назад
+            </button>
+            <button
+              v-if="count"
+              class="button"
+              :disabled="current === count - 1"
+              @click="$emit('update:current', current + 1)"
+            >
+              Вперёд
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -42,7 +46,11 @@ import { ref } from 'vue'
 import SearchField from '@/components/SearchField.vue'
 import SelectField from '@/components/SelectField.vue'
 
-const props = defineProps({ count: { type: Number, default: 0 }, current: { type: Number, default: 0 } })
+const props = defineProps({
+  count: { type: Number, default: 0 },
+  current: { type: Number, default: 0 },
+  isLoaded: { type: Boolean, default: false }
+})
 
 const searchText = ref('')
 
@@ -57,15 +65,19 @@ const selectedLevel = ref('')
       flex-shrink: 0;
     }
     &-search {
-      margin-left: 30px;
       flex-grow: 1;
       max-width: 500px;
       &-container {
+        margin-left: 30px;
       }
     }
 
     &-count {
+      &-of {
+        margin-top: 5px;
+      }
       &-buttons {
+        margin-top: 5px;
         display: flex;
         gap: 5px;
       }
@@ -77,7 +89,35 @@ const selectedLevel = ref('')
     &__fields {
       flex-direction: column;
       &-search {
-        margin: 30px 0 0 0;
+        &-container {
+          margin: 30px 0 0 0;
+        }
+        &-info {
+          margin-top: 5px;
+        }
+      }
+    }
+  }
+}
+@media (min-width: 768px) {
+  .panel {
+    &__fields {
+      &-search {
+        &-container {
+          flex-grow: 1;
+          display: flex;
+        }
+        &-info {
+          display: flex;
+          flex-direction: column-reverse;
+          align-items: flex-end;
+          margin-left: 30px;
+        }
+      }
+      &-count {
+        &-buttons {
+          margin-top: 0px;
+        }
       }
     }
   }

@@ -1,7 +1,13 @@
 <template>
   <div class="search">
     <slot name="prependText">Поиск: </slot>
-    <input v-model="searchText" class="search__input" type="text" @keypress.enter="$emit('search')" />
+    <input
+      v-model="searchText"
+      class="search__input"
+      type="text"
+      :disabled="disabled"
+      @keypress.enter="$emit('search')"
+    />
     <span class="search__icon i i-search i_20"></span>
   </div>
 </template>
@@ -11,7 +17,8 @@ import { ref, watch, computed } from 'vue'
 
 const props = defineProps({
   modelValue: { type: String, default: '' },
-  debounce: { type: Number, default: 0 }
+  debounce: { type: Number, default: 0 },
+  disabled: { type: Number, default: 0 }
 })
 const emit = defineEmits(['update:modelValue', 'search'])
 

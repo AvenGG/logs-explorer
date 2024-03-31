@@ -1,8 +1,9 @@
 <template>
   <div class="main-view">
     <ManagePanel
+      v-model:current="currentSearchIndex"
+      :is-loaded="isLoaded"
       :count="count"
-      v-model:current="scrollId"
       @searchTextChanged="searchText = $event"
       @selectLevel="selectedLevels = $event"
     />
@@ -16,7 +17,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed, watch, nextTick } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 
 import Controller from '@/api/Controller'
 
@@ -25,7 +26,7 @@ import ManagePanel from '@/components/ManagePanel.vue'
 const messages = ref([])
 const searchText = ref('')
 const isLoaded = ref(false)
-const scrollId = ref(0)
+const currentSearchIndex = ref(0)
 
 onMounted(async () => {
   const controller = await new Controller()
@@ -49,15 +50,15 @@ const filteredByLevel = computed(() => {
 })
 const messagesToShow = computed(() => (searchText.value ? messagesWithSearchText.value : filteredByLevel.value))
 
-const scrollElementId = computed(() => searchIndexes.value[scrollId.value]?.id || 0)
+const scrollElementId = computed(() => searchIndexes.value[currentSearchIndex.value]?.id || 0)
 
 let previousMessageProps = {
   string: '',
   obj: null
 }
 watch(
-  () => [scrollElementId.value, scrollId.value],
-  ([elementId, scrollId]) => {
+  () => [scrollElementId.value, currentSearchIndex.value],
+  ([elementId, currentSearchIndex]) => {
     const message = messagesWithSearchText.value[elementId]
     if (!message) return
     if (previousMessageProps.obj) {
@@ -66,7 +67,7 @@ watch(
     previousMessageProps.obj = message
     previousMessageProps.string = message.messageReplaced
 
-    const occurenceStringPosition = searchIndexes.value[scrollId]?.occurenceStringPosition
+    const occurenceStringPosition = searchIndexes.value[currentSearchIndex]?.occurenceStringPosition
 
     let occurence = 0
     message.messageReplaced = message.Message.replace(new RegExp(searchText.value, 'g'), (match) => {
@@ -79,7 +80,7 @@ watch(
   () => [searchText.value, filteredByLevel.value],
   ([searchText, filteredByLevel]) => {
     count.value = 0
-    scrollId.value = 0
+    currentSearchIndex.value = 0
     if (!searchText || !filteredByLevel.length) {
       searchIndexes.value = []
       messagesWithSearchText.value = []
