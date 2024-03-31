@@ -29,9 +29,9 @@ const searchText = ref('');
 const isLoaded = ref(false);
 const currentSearchIndex = ref(0);
 
-new Controller().then((controller) => {
+const controller = new Controller();
+controller.onReady.then(() => {
   controller.onMessage((payload) => {
-    console.log('onMessage: ', payload);
     if (payload.type === 'data') {
       messages.value.push(...payload.data);
       isLoaded.value = true;
